@@ -1,0 +1,24 @@
+[project]
+name = "model-monitoring"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "nannyml==0.13.0",
+    "kaleido==0.2.0",
+    "xgboost>=1.5.0,<3.0.0",
+    "scikit-learn==1.6.1",
+    "pandas==2.2.3",
+    "numpy==1.26.4",
+    "scipy>=1.16.0",
+]
+
+[project.optional-dependencies]
+notebook = [
+    "ipython>=9.4.0",
+    "jupyterlab==4.3.5",
+]
+model-registry = [
+    "mlflow==2.22.0",
+]
