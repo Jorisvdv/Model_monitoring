@@ -41,7 +41,12 @@ class TemporalValidation:
 
                 for name, model in self.models.items():
                     y_pred_proba = model.predict_proba(X_month)[:, 1]
-                    auc = roc_auc_score(y_month, y_pred_proba)
+                    if y_month.nunique() < 2:
+                        auc = np.nan
+                        logging.warning(f"Skipping AUC calculation for month {month} due to having only one class.")
+                    else:
+                        auc = roc_auc_score(y_month, y_pred_proba)
+
                     brier = brier_score_loss(y_month, y_pred_proba)
                     monthly_performance.append(
                         {"month": month.to_timestamp(), "model": name, "AUC": auc, "Brier": brier}
