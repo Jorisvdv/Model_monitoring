@@ -1470,6 +1470,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+dev = [
+    { name = "nb-clean" },
+]
 model-registry = [
     { name = "mlflow" },
 ]
@@ -1491,6 +1494,7 @@ requires-dist = [
     { name = "matplotlib", marker = "extra == 'model-training'", specifier = "==3.9.2" },
     { name = "mlflow", marker = "extra == 'model-registry'", specifier = ">=2.19.0" },
     { name = "nannyml", specifier = "==0.13.0" },
+    { name = "nb-clean", marker = "extra == 'dev'", specifier = ">=4.0.1" },
     { name = "numpy", specifier = "==1.26.4" },
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pandas", specifier = "==2.2.3" },
@@ -1498,7 +1502,7 @@ requires-dist = [
     { name = "scipy", specifier = "==1.14.0" },
     { name = "xgboost", marker = "extra == 'model-training'", specifier = "==2.1.1" },
 ]
-provides-extras = ["notebook", "model-registry", "model-training"]
+provides-extras = ["notebook", "model-registry", "model-training", "dev"]
 
 [[package]]
 name = "multidict"
@@ -1561,6 +1565,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/7d/5a/fd9973306e46f78bd49261daf7f389b0246a650cddbc79f986680aa211ae/nannyml-0.13.0.tar.gz", hash = "sha256:809e8e60373bc80365b3490488d90bed3f9c498ba6ceb80b8467a9af8afcf413", size = 22555058, upload-time = "2025-01-14T22:41:45.964Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/19/e8/7dcd7c5bc1cae5be492e26e38aff788582ab7926bd2c6751b969262156ff/nannyml-0.13.0-py3-none-any.whl", hash = "sha256:b8bc23b7b84b25ce07b9acd6415285d54e21a44dd0b58813666fdca87c8073e4", size = 23023247, upload-time = "2025-01-14T22:41:40.116Z" },
+]
+
+[[package]]
+name = "nb-clean"
+version = "4.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nbformat" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/28/81/2ef0aaf3df03ec4146a92d62ce9b9533d368431791c7e5cb8e027068794a/nb_clean-4.0.1.tar.gz", hash = "sha256:f4af1bec3f25e7b18eb09024947bcc809efc97fd68bec482d219c304d850809f", size = 24170, upload-time = "2024-10-19T14:38:43.548Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3a/be/dd0d1c964fa8e2c645bb9298290c761c34b292ef4b2c113018f1b3c4cd90/nb_clean-4.0.1-py3-none-any.whl", hash = "sha256:6a673775523ad5ae18566bb0880012c169944a9357760dfcf993cdb14e2e5f82", size = 21355, upload-time = "2024-10-19T14:38:41.777Z" },
 ]
 
 [[package]]
