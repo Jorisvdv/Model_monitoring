@@ -161,7 +161,7 @@ class DataDriftMonitor:
 
         return self.univariate_results
 
-    def get_univariate_alerts(self) -> List[str]:
+    def get_univariate_features(self) -> List[str]:
         """
         Get list of column names that have univariate drift alerts.
 
@@ -188,6 +188,44 @@ class DataDriftMonitor:
         except Exception as e:
             logger.error(f"Error getting univariate alerts: {e}")
             return []
+
+    def get_univariate_alerts_by_period(self) -> pd.DataFrame:
+        """
+        Get DataFrame showing time periods and column names that have univariate drift alerts.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with 'period' and 'alert_columns' columns showing which columns
+            have alerts in each time period
+        """
+        if self.univariate_results is None:
+            logger.warning("No univariate results available. Run run_univariate_drift() first.")
+            return pd.DataFrame(columns=["period", "alert_columns"])
+
+        results_df = self.univariate_results.to_df()
+        analysis_period = results_df[("chunk", "chunk", "period")] == "analysis"
+        alert_slice = pd.IndexSlice[:, :, "alert"]
+
+        try:
+            alert_data = results_df.loc[analysis_period, alert_slice]
+            period_alerts = []
+
+            for idx, row in alert_data.iterrows():
+                period_key = results_df.loc[idx, ("chunk", "chunk", "key")]
+                alert_columns = row[row].index.get_level_values(0).tolist()
+                if alert_columns:
+                    period_alerts.append({"period": period_key, "alert_columns": alert_columns})
+
+            if period_alerts:
+                return pd.DataFrame(period_alerts).set_index("period")
+            else:
+                return pd.DataFrame(columns=["alert_columns"])
+        except Exception as e:
+            logger.error(f"Error getting univariate alerts by period: {e}")
+            empty_df = pd.DataFrame(columns=["period", "alert_columns"])
+            empty_df = empty_df.set_index("period")
+            return empty_df
 
     def get_univariate_alert_periods(self) -> List[str]:
         """
@@ -263,7 +301,7 @@ class DataDriftMonitor:
         **kwargs
             Additional arguments passed to the plot function
         """
-        alert_column_names = self.get_univariate_alerts()
+        alert_column_names = self.get_univariate_features()
 
         if not alert_column_names:
             logger.info("No univariate drift alerts to plot.")
@@ -395,11 +433,20 @@ class DataDriftMonitor:
         Dict[str, Any]
             Dictionary containing summary statistics and alert information
         """
+        # Get alerts_by_period DataFrame and convert to records
+        alerts_by_period_df = self.get_univariate_alerts_by_period()
+        if not alerts_by_period_df.empty:
+            # Convert to Series and subsequently to dict format with period as key
+            alerts_by_period_records = alerts_by_period_df["alert_columns"].to_dict()
+        else:
+            alerts_by_period_records = {}
+
         summary = {
             "univariate": {
-                "alerts_detected": len(self.get_univariate_alerts()),
-                "alert_columns": self.get_univariate_alerts(),
+                "alerts_detected": len(self.get_univariate_features()),
+                "alert_columns": self.get_univariate_features(),
                 "alert_periods": self.get_univariate_alert_periods(),
+                "alerts_by_period": alerts_by_period_records,
             },
             "multivariate": {
                 "alerts_detected": 0,
